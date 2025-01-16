@@ -51,17 +51,46 @@
     </tbody>
   </table>
   <button onclick="generateHTML()">Generate HTML</button>
+  <button onclick="downloadHTML()">Download HTML</button>
   <h3>Generated HTML:</h3>
-<pre id="generatedHTML"></pre>
+  <pre id="generatedHTML" style="white-space: pre-wrap; word-wrap: break-word; max-width: 100%; overflow-x: auto;"></pre>
+
 
   <script>
    
    function generateHTML() {
+  const tableRows = document.getElementById("dynamicTable").getElementsByTagName("tbody")[0].rows;
+
+  let formHTML = '<form>\n';
+
+  for (let row of tableRows) {
+    const name = row.cells[0].textContent;
+    const type = row.cells[1].textContent;
+    const required = row.cells[2].textContent === "Yes";
+    const label = row.cells[3].textContent;
+
+   
+    formHTML += `  <label for="${name}">${label}:</label>\n`;
+
+   
+    if (type === "dropdown") {
+      formHTML += `  <select id="${name}" name="${name}" ${required ? "required" : ""}>\n`;
     
-    const tableHTML = document.getElementById("dynamicTable").outerHTML;
+      formHTML += `  </select>\n`;
+    } else {
+      formHTML += `  <input type="${type}" id="${name}" name="${name}" ${required ? "required" : ""}>\n`;
+    }
+
     
-    document.getElementById("generatedHTML").textContent = tableHTML;
+    formHTML += '  <br><br>\n';
+  }
+
+  formHTML += '</form>';
+
+
+  document.getElementById("generatedHTML").textContent = formHTML;
 }
+
     function addToTable() {
       
       var name = document.getElementById('inputName').value;
@@ -95,6 +124,39 @@
       document.getElementById('inputLabel').value = '';
       document.getElementById('inputRequired').checked = false;
       document.getElementById('inputType').value = 'text';
+    }
+
+    function downloadHTML() {
+  
+  const tableRows = document.getElementById("dynamicTable").getElementsByTagName("tbody")[0].rows;
+
+  let formHTML = '<form>';
+
+  for (let row of tableRows) {
+    const name = row.cells[0].textContent;
+    const type = row.cells[1].textContent;
+    const required = row.cells[2].textContent === "Yes";
+    const label = row.cells[3].textContent;
+
+    formHTML += `<label for="${name}">${label}:</label>`;
+
+    if (type === "dropdown") {
+      formHTML += `<select id="${name}" name="${name}" ${required ? "required" : ""}></select>`;
+    } else {
+      formHTML += `<input type="${type}" id="${name}" name="${name}" ${required ? "required" : ""}>`;
+    }
+
+    formHTML += '<br><br>';
+  }
+
+  formHTML += '</form>';
+
+ 
+  const blob = new Blob([formHTML], { type: 'text/html' });
+
+
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL
     }
   </script>
 
