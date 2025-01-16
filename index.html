@@ -127,10 +127,12 @@
     }
 
     function downloadHTML() {
-  
+
   const tableRows = document.getElementById("dynamicTable").getElementsByTagName("tbody")[0].rows;
 
-  let formHTML = '<form>';
+
+  let formHTML = '<form>\n';
+
 
   for (let row of tableRows) {
     const name = row.cells[0].textContent;
@@ -138,26 +140,37 @@
     const required = row.cells[2].textContent === "Yes";
     const label = row.cells[3].textContent;
 
-    formHTML += `<label for="${name}">${label}:</label>`;
+
+    formHTML += `  <label for="${name}">${label}:</label>\n`;
 
     if (type === "dropdown") {
-      formHTML += `<select id="${name}" name="${name}" ${required ? "required" : ""}></select>`;
-    } else {
-      formHTML += `<input type="${type}" id="${name}" name="${name}" ${required ? "required" : ""}>`;
+  
+      formHTML += `  <select id="${name}" name="${name}" ${required ? "required" : ""}>\n`;
+      
+      formHTML += `  </select>\n`;
+    } else {      formHTML += `  <input type="${type}" id="${name}" name="${name}" ${required ? "required" : ""}>\n`;
     }
 
-    formHTML += '<br><br>';
+    formHTML += '  <br><br>\n';
   }
 
   formHTML += '</form>';
 
  
-  const blob = new Blob([formHTML], { type: 'text/html' });
-
+  const blob = new Blob([formHTML], { type: 'text/plain' });
 
   const link = document.createElement('a');
-  link.href = URL.createObjectURL
-    }
+  link.href = URL.createObjectURL(blob);
+  link.download = 'generatedForm.txt'; 
+
+  
+  document.body.appendChild(link); 
+  
+  link.click();
+  document.body.removeChild(link); 
+  
+}
+
   </script>
 
 </body>
